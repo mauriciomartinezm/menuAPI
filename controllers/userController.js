@@ -19,7 +19,7 @@ export const getUser = async (req, res) => {
   console.log("Parámetros de la petición:", req.params);
   try {
     const [result] = await pool.query(
-      "SELECT * FROM usuario WHERE correo = ?",
+      "SELECT * FROM Usuario WHERE correo = ?",
       [emailUsuario]
     );
     console.log(result[0]);
@@ -34,7 +34,7 @@ export const getUser = async (req, res) => {
       });
     }
   } catch (error) {
-    return res.status(401).json({ unknown: "Error con la consulta" });
+    return res.status(401).json({ unknown: "Error interno del servidor", error: error.message});
   }
 };
 //

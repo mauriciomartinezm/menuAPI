@@ -110,7 +110,6 @@ export const updateUser = async (req, res) => {
       "UPDATE Usuario SET ? WHERE correo = ?",
       [req.body, req.params.emailUsuario]
     );
-    console.log("Usuario actualizado");
     res
       .status(200)
       .json({ messageSuccess: "Usuario actualizado correctamente" });
@@ -123,26 +122,23 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   console.log("Petición recibida en /deleteUser");
   console.log("Parámetros recibidos: ", req.params);
-
+  const emailUsuario = req.params.emailUsuario;
   try {
     const result = await pool.query(
-      "DELETE FROM usuario WHERE correo = ?",
-      [req.params.emailUsuario]
+      "DELETE FROM Usuario WHERE correo = ?",
+      [emailUsuario]
     );
 
-    if (result.affectedRows > 0) {
-      console.log("Usuario eliminado");
+    if (result[0].affectedRows > 0) {
       res
         .status(200)
-        .json({ messageSuccess: "Usuario eliminado correctamente" });
+        .json({ messageSuccessss: "Usuario eliminado correctamente", AffectedRows: result[0].affectedRows });
     } else {
-      console.log("No se encontró el usuario para eliminar");
       res
         .status(404)
         .json({ messageError: "Usuario no encontrado" });
     }
   } catch (error) {
-    console.error("Error al eliminar usuario:", error);
     res.status(500).json({ message: error.message });
   }
 };

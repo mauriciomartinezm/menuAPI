@@ -20,11 +20,11 @@ app.use(reviewRouter);
 
 // Configuración de la conexión a la base de datos MySQL
 export const pool = createPool({
-  host: "localhost",
+  host: "b6737tipdo8cxkuodyo9-mysql.services.clever-cloud.com",
   port: "3306",
-  user: "root",
-  password: "westvirginia1603",
-  database: "menu",
+  user: "uhim7e19cwvekoxv",
+  password: "UwYce5Nw2VF3UkEeDsi3",
+  database: "b6737tipdo8cxkuodyo9",
 });
 // Inicia el servidor
 app.listen(port, "0.0.0.0", () => {

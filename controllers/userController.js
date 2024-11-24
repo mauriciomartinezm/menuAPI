@@ -14,7 +14,7 @@ export const getUsers = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-  const emailUsuario = req.params.emailUsuario;
+  const emailUsuario = req.params.emailUser;
   console.log("Petición recibida en /getUser");
   console.log("Parámetros de la petición:", req.params);
   try {
@@ -22,7 +22,6 @@ export const getUser = async (req, res) => {
       "SELECT * FROM Usuario WHERE correo = ?",
       [emailUsuario]
     );
-    console.log(result[0]);
     if (result.length === 1) {
       return res.status(200).json({
         messageSuccess: "Usuario encontrado",
@@ -73,19 +72,16 @@ export const loginUser = async (req, res) => {
   console.log("Petición recibida en /login");
   console.log("Cuerpo de la petición:", req.body);
 
-  const { documento, contrasena } = req.body;
-
-  console.log("Documento recibido:", documento);
-  console.log("Contraseña recibida:", contrasena);
+  const { email, contrasena } = req.body;
 
   try {
-    const [result] = await pool.query(
-      "SELECT * FROM propietario WHERE CedulaPropietario = ? AND Contrasena = ?",
-      [documento, contrasena]
+    const result = await pool.query(
+      "SELECT * FROM Usuario WHERE correo = ? AND contrasena = ?",
+      [email, contrasena]
     );
-    console.log("Resultado de la consulta:", result);
+    console.log("Resultado de la consulta:", result[0]);
 
-    if (result.length === 1) {
+    if (result[0].length === 1) {
       console.log("Inicio de sesión exitoso");
       return res
         .status(200)
@@ -108,7 +104,7 @@ export const updateUser = async (req, res) => {
   try {
     const result = await pool.query(
       "UPDATE Usuario SET ? WHERE correo = ?",
-      [req.body, req.params.emailUsuario]
+      [req.body, req.params.emailUser]
     );
     res
       .status(200)
@@ -122,11 +118,11 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   console.log("Petición recibida en /deleteUser");
   console.log("Parámetros recibidos: ", req.params);
-  const emailUsuario = req.params.emailUsuario;
+  const emailUser = req.params.emailUser;
   try {
     const result = await pool.query(
       "DELETE FROM Usuario WHERE correo = ?",
-      [emailUsuario]
+      [emailUser]
     );
 
     if (result[0].affectedRows > 0) {

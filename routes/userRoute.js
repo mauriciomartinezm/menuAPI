@@ -5,15 +5,16 @@ import {
     registerUser,
     deleteUser,
     updateUser,
-    //loginUser
+    loginUser
 } from '../controllers/userController.js';
 
 const userRouter = Router ();
 
 userRouter.get('/getUsers', getUsers);
-userRouter.get('/getUser/:emailUsuario', getUser);
+userRouter.get('/getUser/:emailUser', getUser);
 userRouter.post('/registerUser', registerUser);
-userRouter.delete('/deleteUser/:emailUsuario', deleteUser);
-userRouter.put('/updateUser/:emailUsuario', updateUser);
+userRouter.delete('/deleteUser/:emailUser', deleteUser);
+userRouter.put('/updateUser/:emailUser', updateUser);
+userRouter.get('/loginUser', loginUser);
 
 export default userRouter;

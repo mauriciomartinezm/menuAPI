@@ -1,11 +1,11 @@
-
 import { db } from "../database/db.js";
+import { v4 as uuidv4 } from 'uuid';
 
-export const getRestaurants = async (req, res) => {
-  console.log("Petición recibida en /getRestaurants");
+export const getHorario = async (req, res) => {
+  console.log("Petición recibida en /getHorario");
 
   try {
-    const [result] = await db.query("SELECT * FROM Restaurante");
+    const [result] = await db.query("SELECT * FROM Horario");
     res.json(result);
   } catch (error) {
     return res
@@ -14,10 +14,10 @@ export const getRestaurants = async (req, res) => {
   }
 };
 
-export const getRestauranteId = async (req, res) => {
+export const getHorarioId = async (req, res) => {
   try {
     const [result] = await db.query(
-      "SELECT * FROM Restaurante WHERE id_restaurante = ?",
+      "SELECT * FROM Horario WHERE id_horario = ?",
       [req.params.id]
     );
 
@@ -33,19 +33,15 @@ export const getRestauranteId = async (req, res) => {
   }
 };
 
-export const createRestaurante = async (req, res) => {
+export const createHorario = async (req, res) => {
   try {
-      const { id_restaurante = uuidv4(), titulo, descripcion, categoria, tipo, id_usuario } = req.body;
-      const query = 'INSERT INTO Restaurante (id_restaurante, titulo, descripcion, categoria, tipo, id_usuario) VALUES (?, ?, ?, ?, ?, ?)';
-      await db.query(query, [id_restaurante, titulo, descripcion, categoria, tipo, id_usuario]);
+      const { id_horario = uuidv4(), nombre } = req.body;
+      const query = 'INSERT INTO Horario (id_horario, nombre) VALUES (?, ?)';
+      await db.query(query, [id_horario, nombre]);
 
       res.json({
-        id_restaurante,
-        titulo,
-        descripcion,
-        categoria,
-        tipo,
-        id_usuario,
+        id_horario,
+        nombre,
         mensaje: "Datos guardados exitosamente",
       });
   } catch (error) {
@@ -53,10 +49,10 @@ export const createRestaurante = async (req, res) => {
   }
 };
 
-export const updateRestaurante = async (req, res) => {
+export const updateHorario = async (req, res) => {
   try {
     const [result] = await db.query(
-      "UPDATE Restaurante SET ? WHERE id_restaurante = ?",
+      "UPDATE Horario SET ? WHERE id_horario = ?",
       [req.body, req.params.id]
     );
 
@@ -70,10 +66,10 @@ export const updateRestaurante = async (req, res) => {
   }
 };
 
-export const deleteRestaurante = async (req, res) => {
+export const deleteHorario = async (req, res) => {
   try {
     const [result] = await db.query(
-      "DELETE FROM Restaurante WHERE id_restaurante = ?",
+      "DELETE FROM Horario WHERE id_horario = ?",
       [req.params.id]
     );
 

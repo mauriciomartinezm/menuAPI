@@ -19,7 +19,7 @@ export const getRestaurant = async (req, res) => {
   console.log("Petición recibida en /getRestaurant");
   console.log("Parámetros de la petición:", req.params);
   try {
-    const [result] = await pool.query(
+    const [result] = await db.query(
       "SELECT * FROM Restaurante WHERE correo = ?",
       [emailRestaurant]
     );
@@ -47,7 +47,7 @@ export const registerRestaurant = async (req, res) => {
   const { nombre_restaurante, correo, telefono, direccion, nombre_categoria, id_horario, id_dueno } = req.body;
   try {
     // Verificar si el usuario ya exist
-    const [existingRestaurant] = await pool.query(
+    const [existingRestaurant] = await db.query(
       "SELECT correo FROM Restaurante WHERE correo = ?",
       [correo]
     );
@@ -59,7 +59,7 @@ export const registerRestaurant = async (req, res) => {
         .json({ existingRestaurant: "El restaurante ya está registrado" });
     }
 
-    const result = await pool.query(
+    const result = await db.query(
       "INSERT INTO Restaurante(id_restaurante, nombre_restaurante, correo, telefono, direccion, id_categoria, id_horario, id_dueno) VALUES (UUID(), ?, ?, ?, ?, SELECT id_categoria FROM Categoria WHERE nombre = ?), ?, ?)",
       [nombre_restaurante, correo, telefono, direccion, nombre_categoria, id_horario, id_dueno]
     );

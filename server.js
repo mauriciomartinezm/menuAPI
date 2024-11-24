@@ -2,8 +2,8 @@ import userRouter from "./routes/userRoute.js";
 import restaurantRouter from "./routes/restaurantRoute.js";
 import reviewRouter from "./routes/reviewRoute.js";
 import categoriaRouter from "./routes/categoriaRoute.js";
-
-import { createPool } from "mysql2/promise";
+import horarioRouter from "./routes/horarioRoute.js";
+//import { createPool } from "mysql2/promise";
 import express from "express";
 import cors from "cors";
 
@@ -20,7 +20,7 @@ app.use(userRouter);
 app.use(restaurantRouter);
 app.use(reviewRouter);
 app.use(categoriaRouter);
-
+app.use(horarioRouter);
 /*// Configuración de la conexión a la base de datos MySQL
 export const pool = createPool({
   host: "b6737tipdo8cxkuodyo9-mysql.services.clever-cloud.com",

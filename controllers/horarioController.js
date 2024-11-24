@@ -35,13 +35,19 @@ export const getHorarioId = async (req, res) => {
 
 export const createHorario = async (req, res) => {
   try {
-      const { id_horario = uuidv4(), nombre } = req.body;
-      const query = 'INSERT INTO Horario (id_horario, nombre) VALUES (?, ?)';
-      await db.query(query, [id_horario, nombre]);
+      const { id_horario = uuidv4(), lunes, martes, miercoles, jueves, viernes, sabado, domingo} = req.body;
+      const query = 'INSERT INTO Horario (id_horario, lunes, martes, miercoles, jueves, viernes, sabado, domingo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+      await db.query(query, [id_horario, lunes, martes, miercoles, jueves, viernes, sabado, domingo]);
 
       res.json({
         id_horario,
-        nombre,
+        lunes, 
+        martes, 
+        miercoles, 
+        jueves, 
+        viernes, 
+        sabado, 
+        domingo,
         mensaje: "Datos guardados exitosamente",
       });
   } catch (error) {

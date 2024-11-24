@@ -1,10 +1,10 @@
-import { pool } from "../server.js";
+import { db } from "../database/db.js";
 
 export const getUsers = async (req, res) => {
   console.log("Petición recibida en /getUsers");
 
   try {
-    const [result] = await pool.query("SELECT * FROM Usuario");
+    const [result] = await db.query("SELECT * FROM Usuario");
     res.json(result);
   } catch (error) {
     return res
@@ -18,7 +18,7 @@ export const getUser = async (req, res) => {
   console.log("Petición recibida en /getUser");
   console.log("Parámetros de la petición:", req.params);
   try {
-    const [result] = await pool.query(
+    const [result] = await db.query(
       "SELECT * FROM Usuario WHERE correo = ?",
       [emailUsuario]
     );
@@ -45,7 +45,7 @@ export const registerUser = async (req, res) => {
   const { nombre, apellido, correo, contrasena } = req.body;
   try {
     // Verificar si el usuario ya exist
-    const [existingUser] = await pool.query(
+    const [existingUser] = await db.query(
       "SELECT correo FROM Usuario WHERE correo = ?",
       [correo]
     );
@@ -57,7 +57,7 @@ export const registerUser = async (req, res) => {
         .json({ existingUser: "El usuario ya está registrado" });
     }
 
-    const result = await pool.query(
+    const result = await db.query(
       "INSERT INTO Usuario(id_usuario, nombre, apellido, correo, contrasena) VALUES (UUID(), ?, ?, ?, ?)",
       [nombre, apellido, correo, contrasena]
     );
@@ -79,7 +79,7 @@ export const loginUser = async (req, res) => {
   console.log("Contraseña recibida:", contrasena);
 
   try {
-    const [result] = await pool.query(
+    const [result] = await db.query(
       "SELECT * FROM propietario WHERE CedulaPropietario = ? AND Contrasena = ?",
       [documento, contrasena]
     );
@@ -106,7 +106,7 @@ export const updateUser = async (req, res) => {
   console.log("Parámetros recibidos: ", req.params);
 
   try {
-    const result = await pool.query(
+    const result = await db.query(
       "UPDATE Usuario SET ? WHERE correo = ?",
       [req.body, req.params.emailUsuario]
     );
@@ -124,7 +124,7 @@ export const deleteUser = async (req, res) => {
   console.log("Parámetros recibidos: ", req.params);
   const emailUsuario = req.params.emailUsuario;
   try {
-    const result = await pool.query(
+    const result = await db.query(
       "DELETE FROM Usuario WHERE correo = ?",
       [emailUsuario]
     );

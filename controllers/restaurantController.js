@@ -1,10 +1,11 @@
-import { pool } from "../server.js";
+
+import { db } from "../database/db.js";
 
 export const getRestaurants = async (req, res) => {
   console.log("Petición recibida en /getRestaurants");
 
   try {
-    const [result] = await pool.query("SELECT * FROM Restaurante");
+    const [result] = await db.query("SELECT * FROM Restaurante");
     res.json(result);
   } catch (error) {
     return res
@@ -89,14 +90,33 @@ export const updateRestaurant = async (req, res) => {
   }
 };
 
-export const deleteRestaurant = async (req, res) => {
+export const getRestauranteId = async (req, res) => {
+  try {
+    const [result] = await db.query(
+      "SELECT * FROM Restaurante WHERE id_restaurante = ?",
+      [req.params.id]
+    );
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: "No existen registros" });
+    }
+
+    res.json(result);
+  } catch (error) {
+      if (!res.headersSent) {
+          res.status(500).json({ message: error.message });
+      }
+  }
+};
+
+export const deleteRestaurante = async (req, res) => {
   console.log("Petición recibida en /deleteRestaurant");
   console.log("Parámetros recibidos: ", req.params);
-  const emailRestaurant = req.params.emailRestaurant;
   try {
-    const result = await pool.query("DELETE FROM Restaurante WHERE correo = ?", [
-      emailRestaurant,
-    ]);
+    const [result] = await db.query(
+      "DELETE FROM Restaurante WHERE id_restaurante = ?",
+      [req.params.id]
+    );
 
     if (result[0].affectedRows > 0) {
       res

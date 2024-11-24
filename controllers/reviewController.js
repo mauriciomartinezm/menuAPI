@@ -1,10 +1,10 @@
-import { pool } from "../server.js";
+import { db } from "../database/db.js";
 
 export const getReviews = async (req, res) => {
   console.log("Petición recibida en /getReviews");
 
   try {
-    const [result] = await pool.query("SELECT * FROM Reseña");
+    const [result] = await db.query("SELECT * FROM Reseña");
     res.json(result);
   } catch (error) {
     return res
@@ -23,7 +23,7 @@ export const makeReview = async (req, res) => {
     });
   }
   try {
-    const result = await pool.query(
+    const result = await db.query(
       "INSERT INTO Reseña(id_reseña, id_usuario, id_restaurante, calificacion, comentario) VALUES (UUID(), ?, ?, ?, ?)",
       [
         idUsuario,

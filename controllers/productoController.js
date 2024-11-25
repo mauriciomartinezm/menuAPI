@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { db } from "../database/db.js";
 
-export const getRestaurants = async (req, res) => {
-  console.log("Petición recibida en /getRestaurants");
+export const getProducto = async (req, res) => {
+  console.log("Petición recibida en /getProducto");
 
   try {
-    const [result] = await db.query("SELECT * FROM Restaurante");
+    const [result] = await db.query("SELECT * FROM Producto");
     res.json(result);
   } catch (error) {
     return res
@@ -14,10 +14,10 @@ export const getRestaurants = async (req, res) => {
   }
 };
 
-export const getRestauranteId = async (req, res) => {
+export const getProductoId = async (req, res) => {
   try {
     const [result] = await db.query(
-      "SELECT * FROM Restaurante WHERE id_restaurante = ?",
+      "SELECT * FROM Producto WHERE id_producto = ?",
       [req.params.id]
     );
 
@@ -33,23 +33,19 @@ export const getRestauranteId = async (req, res) => {
   }
 };
 
-export const createRestaurante = async (req, res) => {
+export const createProducto = async (req, res) => {
   try {
-      const { id_restaurante = uuidv4(), nombre_restaurante, correo, telefono, direccion, descripcion, fecha_fundacion, id_categoria, id_horario,  id_dueno, calificacion } = req.body;
-      const query = 'INSERT INTO Restaurante (id_restaurante, nombre_restaurante, correo, telefono, direccion, descripcion, fecha_fundacion, id_categoria, id_horario, id_dueno, calificacion) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?,?)';
-      await db.query(query, [id_restaurante, nombre_restaurante, correo, telefono, direccion, descripcion, fecha_fundacion, id_categoria, id_horario, id_dueno, calificacion]);
+      const { id_producto = uuidv4(),  id_restaurante, nombre, descripcion, precio, imagen} = req.body;
+      const query = 'INSERT INTO Producto (id_producto,  id_restaurante, nombre, descripcion, precio, imagen) VALUES (?, ?, ?, ?, ?, ?)';
+      await db.query(query, [id_producto,  id_restaurante, nombre, descripcion, precio, imagen]);
 
       res.json({
+        id_producto,
         id_restaurante,
-        nombre_restaurante,
-        correo,
-        telefono,
-        direccion,
-        fecha_fundacion,
+        nombre,
         descripcion,
-        id_categoria,
-        id_horario,
-        calificacion,
+        precio,
+        imagen,
         mensaje: "Datos guardados exitosamente",
       });
   } catch (error) {
@@ -57,10 +53,10 @@ export const createRestaurante = async (req, res) => {
   }
 };
 
-export const updateRestaurante = async (req, res) => {
+export const updateProducto = async (req, res) => {
   try {
     const [result] = await db.query(
-      "UPDATE Restaurante SET ? WHERE id_restaurante = ?",
+      "UPDATE Producto SET ? WHERE id_producto = ?",
       [req.body, req.params.id]
     );
 
@@ -74,10 +70,10 @@ export const updateRestaurante = async (req, res) => {
   }
 };
 
-export const deleteRestaurante = async (req, res) => {
+export const deleteProducto = async (req, res) => {
   try {
     const [result] = await db.query(
-      "DELETE FROM Restaurante WHERE id_restaurante = ?",
+      "DELETE FROM Producto WHERE id_producto = ?",
       [req.params.id]
     );
 

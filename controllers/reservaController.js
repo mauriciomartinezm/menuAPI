@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { db } from "../database/db.js";
 
-export const getRestaurants = async (req, res) => {
-  console.log("Petición recibida en /getRestaurants");
+export const getReserva = async (req, res) => {
+  console.log("Petición recibida en /getReserva");
 
   try {
-    const [result] = await db.query("SELECT * FROM Restaurante");
+    const [result] = await db.query("SELECT * FROM Reserva");
     res.json(result);
   } catch (error) {
     return res
@@ -14,10 +14,10 @@ export const getRestaurants = async (req, res) => {
   }
 };
 
-export const getRestauranteId = async (req, res) => {
+export const getReservaId = async (req, res) => {
   try {
     const [result] = await db.query(
-      "SELECT * FROM Restaurante WHERE id_restaurante = ?",
+      "SELECT * FROM Reserva WHERE id_reserva = ?",
       [req.params.id]
     );
 
@@ -33,23 +33,20 @@ export const getRestauranteId = async (req, res) => {
   }
 };
 
-export const createRestaurante = async (req, res) => {
+export const createReserva = async (req, res) => {
   try {
-      const { id_restaurante = uuidv4(), nombre_restaurante, correo, telefono, direccion, descripcion, fecha_fundacion, id_categoria, id_horario,  id_dueno, calificacion } = req.body;
-      const query = 'INSERT INTO Restaurante (id_restaurante, nombre_restaurante, correo, telefono, direccion, descripcion, fecha_fundacion, id_categoria, id_horario, id_dueno, calificacion) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?,?)';
-      await db.query(query, [id_restaurante, nombre_restaurante, correo, telefono, direccion, descripcion, fecha_fundacion, id_categoria, id_horario, id_dueno, calificacion]);
+      const { id_reserva = uuidv4(), id_usuario, id_restaurante, fecha_reserva, numero_personas, estado, comentario} = req.body;
+      const query = 'INSERT INTO Reserva (id_reserva, id_usuario, id_restaurante, fecha_reserva, numero_personas, estado, comentario) VALUES (?, ?, ?, ?, ?, ?,?)';
+      await db.query(query, [id_reserva, id_usuario, id_restaurante, fecha_reserva, numero_personas, estado, comentario]);
 
       res.json({
+        id_reserva,
+        id_usuario,
         id_restaurante,
-        nombre_restaurante,
-        correo,
-        telefono,
-        direccion,
-        fecha_fundacion,
-        descripcion,
-        id_categoria,
-        id_horario,
-        calificacion,
+        fecha_reserva,
+        numero_personas,
+        estado,
+        comentario,
         mensaje: "Datos guardados exitosamente",
       });
   } catch (error) {
@@ -57,10 +54,10 @@ export const createRestaurante = async (req, res) => {
   }
 };
 
-export const updateRestaurante = async (req, res) => {
+export const updateReserva = async (req, res) => {
   try {
     const [result] = await db.query(
-      "UPDATE Restaurante SET ? WHERE id_restaurante = ?",
+      "UPDATE Reserva SET ? WHERE id_reserva = ?",
       [req.body, req.params.id]
     );
 
@@ -74,10 +71,10 @@ export const updateRestaurante = async (req, res) => {
   }
 };
 
-export const deleteRestaurante = async (req, res) => {
+export const deleteReserva = async (req, res) => {
   try {
     const [result] = await db.query(
-      "DELETE FROM Restaurante WHERE id_restaurante = ?",
+      "DELETE FROM Reserva WHERE id_reserva = ?",
       [req.params.id]
     );
 

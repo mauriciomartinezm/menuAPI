@@ -1,11 +1,11 @@
-import { db } from "../database/db.js";
 import { v4 as uuidv4 } from 'uuid';
+import { db } from "../database/db.js";
 
-export const getHorario = async (req, res) => {
-  console.log("Petición recibida en /getHorario");
+export const getProducto = async (req, res) => {
+  console.log("Petición recibida en /getProducto");
 
   try {
-    const [result] = await db.query("SELECT * FROM Horario");
+    const [result] = await db.query("SELECT * FROM Producto");
     res.json(result);
   } catch (error) {
     return res
@@ -14,10 +14,10 @@ export const getHorario = async (req, res) => {
   }
 };
 
-export const getHorarioId = async (req, res) => {
+export const getProductoId = async (req, res) => {
   try {
     const [result] = await db.query(
-      "SELECT * FROM Horario WHERE id_horario = ?",
+      "SELECT * FROM Producto WHERE id_producto = ?",
       [req.params.id]
     );
 
@@ -33,21 +33,19 @@ export const getHorarioId = async (req, res) => {
   }
 };
 
-export const createHorario = async (req, res) => {
+export const createProducto = async (req, res) => {
   try {
-      const { id_horario = uuidv4(), lunes, martes, miercoles, jueves, viernes, sabado, domingo} = req.body;
-      const query = 'INSERT INTO Horario (id_horario, lunes, martes, miercoles, jueves, viernes, sabado, domingo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-      await db.query(query, [id_horario, lunes, martes, miercoles, jueves, viernes, sabado, domingo]);
+      const { id_producto = uuidv4(),  id_restaurante, nombre, descripcion, precio, imagen} = req.body;
+      const query = 'INSERT INTO Producto (id_producto,  id_restaurante, nombre, descripcion, precio, imagen) VALUES (?, ?, ?, ?, ?, ?)';
+      await db.query(query, [id_producto,  id_restaurante, nombre, descripcion, precio, imagen]);
 
       res.json({
-        id_horario,
-        lunes, 
-        martes, 
-        miercoles, 
-        jueves, 
-        viernes, 
-        sabado, 
-        domingo,
+        id_producto,
+        id_restaurante,
+        nombre,
+        descripcion,
+        precio,
+        imagen,
         mensaje: "Datos guardados exitosamente",
       });
   } catch (error) {
@@ -55,10 +53,10 @@ export const createHorario = async (req, res) => {
   }
 };
 
-export const updateHorario = async (req, res) => {
+export const updateProducto = async (req, res) => {
   try {
     const [result] = await db.query(
-      "UPDATE Horario SET ? WHERE id_horario = ?",
+      "UPDATE Producto SET ? WHERE id_producto = ?",
       [req.body, req.params.id]
     );
 
@@ -72,10 +70,10 @@ export const updateHorario = async (req, res) => {
   }
 };
 
-export const deleteHorario = async (req, res) => {
+export const deleteProducto = async (req, res) => {
   try {
     const [result] = await db.query(
-      "DELETE FROM Horario WHERE id_horario = ?",
+      "DELETE FROM Producto WHERE id_producto = ?",
       [req.params.id]
     );
 

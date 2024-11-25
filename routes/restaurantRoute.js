@@ -1,19 +1,19 @@
 import {Router} from 'express';
 import {
-    getRestaurants,
-    getRestaurant,
-    updateRestaurant,
+    createRestaurante,
     deleteRestaurante,
-    registerRestaurant
+    getRestauranteId,
+    getRestaurants,
+    updateRestaurante
 } from '../controllers/restaurantController.js';
 
 const restaurantRouter = Router ();
 
-restaurantRouter.get('/getRestaurants', getRestaurants);
-restaurantRouter.get('/getRestaurant:', getRestaurant);
-restaurantRouter.put('/updateRestaurant', updateRestaurant);
-restaurantRouter.delete('/deleteRestaurant,', deleteRestaurante);
-restaurantRouter.post('/registerRestaurant', registerRestaurant);
+restaurantRouter.get('/api/getRestaurants', getRestaurants);
+restaurantRouter.get('/api/Restaurants/:id', getRestauranteId);
+restaurantRouter.post('/api/Restaurants', createRestaurante);
+restaurantRouter.patch('/api/Restaurants/:id', updateRestaurante);
+restaurantRouter.delete('/api/Restaurants/:id', deleteRestaurante);
 
 
 export default restaurantRouter;

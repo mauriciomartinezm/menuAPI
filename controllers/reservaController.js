@@ -1,11 +1,11 @@
-import { db } from "../database/db.js";
 import { v4 as uuidv4 } from 'uuid';
+import { db } from "../database/db.js";
 
-export const getHorario = async (req, res) => {
-  console.log("Petición recibida en /getHorario");
+export const getReserva = async (req, res) => {
+  console.log("Petición recibida en /getReserva");
 
   try {
-    const [result] = await db.query("SELECT * FROM Horario");
+    const [result] = await db.query("SELECT * FROM Reserva");
     res.json(result);
   } catch (error) {
     return res
@@ -14,10 +14,10 @@ export const getHorario = async (req, res) => {
   }
 };
 
-export const getHorarioId = async (req, res) => {
+export const getReservaId = async (req, res) => {
   try {
     const [result] = await db.query(
-      "SELECT * FROM Horario WHERE id_horario = ?",
+      "SELECT * FROM Reserva WHERE id_reserva = ?",
       [req.params.id]
     );
 
@@ -33,21 +33,20 @@ export const getHorarioId = async (req, res) => {
   }
 };
 
-export const createHorario = async (req, res) => {
+export const createReserva = async (req, res) => {
   try {
-      const { id_horario = uuidv4(), lunes, martes, miercoles, jueves, viernes, sabado, domingo} = req.body;
-      const query = 'INSERT INTO Horario (id_horario, lunes, martes, miercoles, jueves, viernes, sabado, domingo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-      await db.query(query, [id_horario, lunes, martes, miercoles, jueves, viernes, sabado, domingo]);
+      const { id_reserva = uuidv4(), id_usuario, id_restaurante, fecha_reserva, numero_personas, estado, comentario} = req.body;
+      const query = 'INSERT INTO Reserva (id_reserva, id_usuario, id_restaurante, fecha_reserva, numero_personas, estado, comentario) VALUES (?, ?, ?, ?, ?, ?,?)';
+      await db.query(query, [id_reserva, id_usuario, id_restaurante, fecha_reserva, numero_personas, estado, comentario]);
 
       res.json({
-        id_horario,
-        lunes, 
-        martes, 
-        miercoles, 
-        jueves, 
-        viernes, 
-        sabado, 
-        domingo,
+        id_reserva,
+        id_usuario,
+        id_restaurante,
+        fecha_reserva,
+        numero_personas,
+        estado,
+        comentario,
         mensaje: "Datos guardados exitosamente",
       });
   } catch (error) {
@@ -55,10 +54,10 @@ export const createHorario = async (req, res) => {
   }
 };
 
-export const updateHorario = async (req, res) => {
+export const updateReserva = async (req, res) => {
   try {
     const [result] = await db.query(
-      "UPDATE Horario SET ? WHERE id_horario = ?",
+      "UPDATE Reserva SET ? WHERE id_reserva = ?",
       [req.body, req.params.id]
     );
 
@@ -72,10 +71,10 @@ export const updateHorario = async (req, res) => {
   }
 };
 
-export const deleteHorario = async (req, res) => {
+export const deleteReserva = async (req, res) => {
   try {
     const [result] = await db.query(
-      "DELETE FROM Horario WHERE id_horario = ?",
+      "DELETE FROM Reserva WHERE id_reserva = ?",
       [req.params.id]
     );
 

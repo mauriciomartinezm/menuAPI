@@ -1,9 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { db } from "../database/db.js";
 
-export const getRestaurants = async (req, res) => {
-  console.log("Petición recibida en /getRestaurants");
-
+export const getRestaurantes = async (req, res) => {
   try {
     const [result] = await db.query("SELECT * FROM Restaurante");
     res.json(result);
@@ -27,33 +25,41 @@ export const getRestauranteId = async (req, res) => {
 
     res.json(result);
   } catch (error) {
-      if (!res.headersSent) {
-          res.status(500).json({ message: error.message });
-      }
+    if (!res.headersSent) {
+      res.status(500).json({ message: error.message });
+    }
   }
 };
 
 export const createRestaurante = async (req, res) => {
   try {
-      const { id_restaurante = uuidv4(), nombre_restaurante, correo, telefono, direccion, descripcion, fecha_fundacion, id_categoria, id_horario,  id_dueno, calificacion } = req.body;
-      const query = 'INSERT INTO Restaurante (id_restaurante, nombre_restaurante, correo, telefono, direccion, descripcion, fecha_fundacion, id_categoria, id_horario, id_dueno, calificacion) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?,?)';
-      await db.query(query, [id_restaurante, nombre_restaurante, correo, telefono, direccion, descripcion, fecha_fundacion, id_categoria, id_horario, id_dueno, calificacion]);
+    const {
+      id_restaurante = uuidv4(),
+      nombre_restaurante,
+      telefono,
+      id_categoria,
+      id_socio,
+    } = req.body;
+    const query =
+      "INSERT INTO Restaurante (id_restaurante, nombre_restaurante, telefono, id_categoria, id_socio) VALUES (?, ?, ?, ?, ?)";
+    await db.query(query, [
+      id_restaurante,
+      nombre_restaurante,
+      telefono,
+      id_categoria,
+      id_socio,
+    ]);
 
-      res.json({
-        id_restaurante,
-        nombre_restaurante,
-        correo,
-        telefono,
-        direccion,
-        fecha_fundacion,
-        descripcion,
-        id_categoria,
-        id_horario,
-        calificacion,
-        mensaje: "Datos guardados exitosamente",
-      });
+    res.json({
+      id_restaurante,
+      nombre_restaurante,
+      telefono,
+      id_categoria,
+      id_socio,
+      mensaje: "Datos guardados exitosamente",
+    });
   } catch (error) {
-      res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 

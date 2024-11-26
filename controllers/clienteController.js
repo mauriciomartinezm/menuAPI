@@ -1,5 +1,6 @@
 import { db } from "../database/db.js";
 import { v4 as uuidv4 } from "uuid";
+import jwt from "jsonwebtoken";
 
 export const getClientes = async (req, res) => {
   try {
@@ -14,9 +15,10 @@ export const getClientes = async (req, res) => {
 
 export const getCliente = async (req, res) => {
   try {
-    const [result] = await db.query("SELECT * FROM Cliente WHERE id_cliente = ?", [
-      req.params.id,
-    ]);
+    const [result] = await db.query(
+      "SELECT * FROM Cliente WHERE id_cliente = ?",
+      [req.params.id]
+    );
 
     if (result.length === 0) {
       return res.status(404).json({ message: "No existen registros" });
@@ -52,7 +54,7 @@ export const createCliente = async (req, res) => {
       contrasena,
     ]);
 
-    res.json({
+    res.status(200).json({
       id_cliente,
       nombre,
       apellido,
@@ -66,8 +68,7 @@ export const createCliente = async (req, res) => {
   }
 };
 
-export const loginCliente= async (req, res) => {
-
+export const loginCliente = async (req, res) => {
   const { correo, contrasena } = req.body;
 
   try {
@@ -77,9 +78,34 @@ export const loginCliente= async (req, res) => {
     );
 
     if (result.length === 1) {
-      return res
-        .status(200)
-        .json({ messageSuccess: "Inicio de sesión exitoso", user: result});
+      const user = result[0];
+      const payload = {
+        id: user.id_cliente,
+        nombre: user.nombre,
+        apellido: user.apellido,
+        correo: user.correo,
+        telefono: user.telefono,
+        direccion: user.direccion,
+        fecha_nacimiento: user.fecha_nacimiento,
+        preferencias: user.preferencias,
+      };
+
+      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+      return res.status(200).json({
+        messageSuccess: "Inicio de sesión exitoso",
+        token, // Se devuelve el token generado al frontend
+        user: {
+          id: user.id_cliente,
+          nombre: user.nombre,
+          apellido: user.apellido,
+          correo: user.correo,
+          telefono: user.telefono,
+          direccion: user.direccion,
+          fecha_nacimiento: user.fecha_nacimiento,
+          preferencias: user.preferencias,
+        },
+      });
     } else {
       return res.status(401).json({ messageFail: "Credenciales inválidas" });
     }
@@ -90,10 +116,10 @@ export const loginCliente= async (req, res) => {
 
 export const updateCliente = async (req, res) => {
   try {
-    const [result] = await db.query("UPDATE Cliente SET ? WHERE id_cliente = ?", [
-      req.body,
-      req.params.id,
-    ]);
+    const [result] = await db.query(
+      "UPDATE Cliente SET ? WHERE id_cliente = ?",
+      [req.body, req.params.id]
+    );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "No se encuentra registrado" });
@@ -107,9 +133,10 @@ export const updateCliente = async (req, res) => {
 
 export const deleteCliente = async (req, res) => {
   try {
-    const [result] = await db.query("DELETE FROM Cliente WHERE id_cliente = ?", [
-      req.params.id,
-    ]);
+    const [result] = await db.query(
+      "DELETE FROM Cliente WHERE id_cliente = ?",
+      [req.params.id]
+    );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "No se encuentra registrado" });

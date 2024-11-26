@@ -1,6 +1,5 @@
 import clienteRouter from "./routes/clienteRoute.js";
 import restaurantRouter from "./routes/restaurantRoute.js";
-import reviewRouter from "./routes/reviewRoute.js";
 import categoriaRouter from "./routes/categoriaRoute.js";
 import horarioRouter from "./routes/horarioRoute.js";
 //import { createPool } from "mysql2/promise";
@@ -22,7 +21,6 @@ const port = 3000;
 // Configuración del body parser para manejar las solicitudes JSON
 app.use(clienteRouter);
 app.use(restaurantRouter);
-app.use(reviewRouter);
 app.use(categoriaRouter);
 app.use(horarioRouter);
 app.use(resenaRouter);

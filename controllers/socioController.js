@@ -99,3 +99,25 @@ export const deleteSocio = async (req, res) => {
   }
 };
 
+export const loginSocio = async (req, res) => {
+
+  const { email, contrasena } = req.body;
+
+  try {
+    const [result] = await db.query(
+      "SELECT * FROM Socio WHERE correo = ? AND contrasena = ?",
+      [email, contrasena]
+    );
+
+    if (result.length === 1) {
+      return res
+        .status(200)
+        .json({ messageSuccess: "Inicio de sesión exitoso", user: result});
+    } else {
+      return res.status(401).json({ messageFail: "Credenciales inválidas" });
+    }
+  } catch (error) {
+    return res.status(401).json({ unknown: error });
+  }
+};
+

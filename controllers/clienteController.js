@@ -1,6 +1,7 @@
 import { db } from "../database/db.js";
 import { v4 as uuidv4 } from "uuid";
-import jwt from "jsonwebtoken";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export const getClientes = async (req, res) => {
   try {
@@ -45,13 +46,14 @@ export const createCliente = async (req, res) => {
     } = req.body;
     const query =
       "INSERT INTO Cliente (id_cliente, nombre, apellido, correo, telefono, contrasena) VALUES (?, ?, ?, ?, ?, ?)";
-    await db.query(query, [
+      const hashedPassword = bcrypt.hashSync(contrasena, 10);
+      await db.query(query, [
       id_cliente,
       nombre,
       apellido,
       correo,
       telefono,
-      contrasena,
+      hashedPassword,
     ]);
 
     res.status(200).json({
@@ -60,7 +62,7 @@ export const createCliente = async (req, res) => {
       apellido,
       correo,
       telefono,
-      contrasena,
+      hashedPassword,
       mensaje: "Datos guardados exitosamente",
     });
   } catch (error) {
@@ -68,49 +70,73 @@ export const createCliente = async (req, res) => {
   }
 };
 
+// Clave secreta para firmar el token (deberías mantenerla en un archivo de configuración o variable de entorno)
+const SECRET_KEY = 'esta-es-mas-contrasena-mas-larga-posible-que-se-me-ocurrio-39923933-394934jffef.w244';
+
 export const loginCliente = async (req, res) => {
   const { correo, contrasena } = req.body;
-
   try {
+    // Buscar al Cliente por correo (suponiendo que el correo es único)
     const [result] = await db.query(
-      "SELECT * FROM Cliente WHERE correo = ? AND contrasena = ?",
-      [correo, contrasena]
+      'SELECT * FROM Cliente WHERE correo = ?',
+      [correo]
     );
 
-    if (result.length === 1) {
-      const user = result[0];
-      const payload = {
-        id: user.id_cliente,
-        nombre: user.nombre,
-        apellido: user.apellido,
-        correo: user.correo,
-        telefono: user.telefono,
-        direccion: user.direccion,
-        fecha_nacimiento: user.fecha_nacimiento,
-        preferencias: user.preferencias,
-      };
-
-      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-      return res.status(200).json({
-        messageSuccess: "Inicio de sesión exitoso",
-        token, // Se devuelve el token generado al frontend
-        user: {
-          id: user.id_cliente,
-          nombre: user.nombre,
-          apellido: user.apellido,
-          correo: user.correo,
-          telefono: user.telefono,
-          direccion: user.direccion,
-          fecha_nacimiento: user.fecha_nacimiento,
-          preferencias: user.preferencias,
-        },
-      });
-    } else {
-      return res.status(401).json({ messageFail: "Credenciales inválidas" });
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'cliente no encontrado' });
     }
+
+    const cliente = result[0];
+
+    // Verificar que la contraseña ingresada coincide con la almacenada en la base de datos
+    const isPasswordValid = bcrypt.compareSync(contrasena, cliente.contrasena);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Contraseña incorrecta' });
+    }
+
+    // Crear un token JWT
+    const token = jwt.sign(
+      { id_cliente: cliente.id_cliente, nombre: cliente.nombre, correo: cliente.correo },
+      SECRET_KEY
+    );
+
+    // Enviar el token en la respuesta
+    res.json({ token });
   } catch (error) {
-    return res.status(401).json({ unknown: error });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Middleware para verificar el token
+export const verificarToken = (req, res, next) => {
+  const token = req.header('Authorization')?.split(' ')[1]; // Obtener el token del encabezado Authorization
+
+  if (!token) {
+    return res.status(403).json({ message: 'Acceso denegado, token no proporcionado' });
+  }
+
+  // Verificar el token
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: 'Token inválido' });
+    }
+    req.user = decoded; // Guardar los datos del cliente decodificados en la solicitud
+    next(); // Continuar con la ejecución del controlador de la ruta
+  });
+};
+
+let blacklist = [];  // Lista negra de tokens revocados (esto podría ser una base de datos)
+
+export const logoutCliente = (req, res) => {
+  const token = req.headers['authorization']?.split(' ')[1];
+
+  if (token) {
+    // Agregar el token a la lista negra
+    blacklist.push(token);
+    res.json({ message: 'Has cerrado sesión correctamente' });
+  } else {
+    res.status(400).json({ message: 'No hay token en la solicitud' });
   }
 };
 

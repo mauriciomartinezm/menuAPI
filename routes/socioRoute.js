@@ -8,6 +8,6 @@ socioRouter.get('/api/socio/:id', getSocioId);
 socioRouter.post('/api/socio', createSocio);
 socioRouter.patch('/api/socio/:id', updateSocio);
 socioRouter.delete('/api/socio/:id', deleteSocio);
-socioRouter.get('/api/loginSocio', loginSocio);
+socioRouter.post('/api/loginSocio', loginSocio);
 
 export default socioRouter;

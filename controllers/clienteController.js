@@ -117,7 +117,6 @@ export const loginCliente = async (req, res) => {
 };
 
 export const updateCliente = async (req, res) => {
-  console.log("Peticion recibida en updateCliente");
   try {
     const [result] = await db.query(
       "UPDATE Cliente SET ? WHERE id_cliente = ?",

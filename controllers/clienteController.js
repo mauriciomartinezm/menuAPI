@@ -84,22 +84,24 @@ export const loginCliente = async (req, res) => {
         nombre: user.nombre,
         apellido: user.apellido,
         correo: user.correo,
+        imagen_perfil: user.imagen_perfil,
         telefono: user.telefono,
         direccion: user.direccion,
         fecha_nacimiento: user.fecha_nacimiento,
         preferencias: user.preferencias,
       };
 
-      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign(payload, process.env.JWT_SECRET);
 
       return res.status(200).json({
         messageSuccess: "Inicio de sesión exitoso",
         token, // Se devuelve el token generado al frontend
-        user: {
+        cliente: {
           id: user.id_cliente,
           nombre: user.nombre,
           apellido: user.apellido,
           correo: user.correo,
+          imagen_perfil: user.imagen_perfil,
           telefono: user.telefono,
           direccion: user.direccion,
           fecha_nacimiento: user.fecha_nacimiento,
@@ -115,6 +117,7 @@ export const loginCliente = async (req, res) => {
 };
 
 export const updateCliente = async (req, res) => {
+  console.log("Peticion recibida en updateCliente");
   try {
     const [result] = await db.query(
       "UPDATE Cliente SET ? WHERE id_cliente = ?",
@@ -125,8 +128,9 @@ export const updateCliente = async (req, res) => {
       return res.status(404).json({ message: "No se encuentra registrado" });
     }
 
-    res.json({ message: "Datos actualizados exitosamente" });
+    res.json({ message: "Datos actualizados exitosamente"});
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };

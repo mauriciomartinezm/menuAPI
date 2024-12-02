@@ -22,7 +22,7 @@ export const getResenaId = async (req, res) => {
     );
 
     if (result.length === 0) {
-      return res.status(404).json({ message: "No existen registros" });
+      return res.json({ message: "No existen registros" });
     }
 
     res.json(result);

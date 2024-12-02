@@ -35,13 +35,13 @@ export const getResenaId = async (req, res) => {
 
 export const createResena = async (req, res) => {
   try {
-      const { id_resena = uuidv4(), id_usuario, id_restaurante, calificacion, comentario} = req.body;
-      const query = 'INSERT INTO Resena (id_resena, id_usuario, id_restaurante, calificacion, comentario) VALUES (?, ?, ?, ?, ?)';
-      await db.query(query, [id_resena, id_usuario, id_restaurante, calificacion, comentario]);
+      const { id_resena = uuidv4(), id_cliente, id_restaurante, calificacion, comentario} = req.body;
+      const query = 'INSERT INTO Resena (id_resena, id_cliente, id_restaurante, calificacion, comentario) VALUES (?, ?, ?, ?, ?)';
+      await db.query(query, [id_resena, id_cliente, id_restaurante, calificacion, comentario]);
 
       res.json({
         id_resena,
-        id_usuario, 
+        id_cliente, 
         id_restaurante, 
         calificacion, 
         comentario, 

@@ -33,6 +33,26 @@ export const getResenaId = async (req, res) => {
   }
 };
 
+export const getResenaRestaurante = async (req, res) => {
+  try {
+    const [result] = await db.query(
+      "SELECT * FROM Resena WHERE id_restaurante = ?",
+      [req.params.id]
+    );
+
+    if (result.length === 0) {
+      return res.json({ message: "No existen registros" });
+    }
+
+    res.json(result);
+  } catch (error) {
+      if (!res.headersSent) {
+          res.status(500).json({ message: error.message });
+      }
+  }
+};
+
+
 export const createResena = async (req, res) => {
   console.log(req.body);
   try {

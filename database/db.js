@@ -1,11 +1,11 @@
 import { createPool } from 'mysql2/promise';
 
 export const db = createPool({
-    host: "b6737tipdo8cxkuodyo9-mysql.services.clever-cloud.com",
-    port: "3306",
-    user: "uhim7e19cwvekoxv",
-    password: "UwYce5Nw2VF3UkEeDsi3",
-    database: "b6737tipdo8cxkuodyo9",
+    host: "junction.proxy.rlwy.net",
+    port: "58382",
+    user: "root",
+    password: "tzYosTfnagLAnCOzXxQLTcNbXdCGtxbJ",
+    database: "railway",
 });
 
 // Para verificar la conexión

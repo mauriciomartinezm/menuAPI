@@ -100,12 +100,12 @@ export const deleteSocio = async (req, res) => {
 
 export const loginSocio = async (req, res) => {
 
-  const { email, contrasena } = req.body;
+  const { correo, contrasena } = req.body;
 
   try {
     const [result] = await db.query(
       "SELECT * FROM Socio WHERE correo = ? AND contrasena = ?",
-      [email, contrasena]
+      [correo, contrasena]
     );
 
     if (result.length === 1) {

@@ -15,6 +15,6 @@ socioRouter.get('/api/getSocio/:id', getSocio);
 socioRouter.post('/api/createSocio', createSocio);
 socioRouter.delete('/api/deleteSocio/:id', deleteSocio);
 socioRouter.put('/api/updateSocio/:id', updateSocio);
-socioRouter.get('/api/loginSocio', loginSocio);
+socioRouter.post('/api/loginSocio', loginSocio);
 
 export default socioRouter;

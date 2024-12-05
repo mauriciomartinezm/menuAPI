@@ -80,7 +80,7 @@ export const loginCliente = async (req, res) => {
     if (result.length === 1) {
       const user = result[0];
       const payload = {
-        id: user.id_cliente,
+        id_cliente: user.id_cliente,
         nombre: user.nombre,
         apellido: user.apellido,
         correo: user.correo,
@@ -97,7 +97,7 @@ export const loginCliente = async (req, res) => {
         messageSuccess: "Inicio de sesión exitoso",
         token, // Se devuelve el token generado al frontend
         cliente: {
-          id: user.id_cliente,
+          id_cliente: user.id_cliente,
           nombre: user.nombre,
           apellido: user.apellido,
           correo: user.correo,
